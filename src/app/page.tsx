@@ -22,17 +22,23 @@ function Square({value, indexSq, onSquareClick}: SquareProps) {
 
 type BoardProps = {
   player: string,
-  onPlay: () => void
+  onPlay: () => void,
+  onWinner: (winner:string) => void
 }
 
-function Board({player, onPlay}: BoardProps) {
-  const [cells, setCells] = useState(new Array(9).fill(''));
+function Board({player, onPlay, onWinner}: BoardProps) {
+  const [cells, setCells] = useState<string[]>(new Array(9).fill(''));
 
-  function handleClick(indexSq:number)  {
+  async function handleClick(indexSq:number)  {
     var nextCells:string[] = cells.slice()
-    nextCells[indexSq] = player;
-    onPlay();
-    setCells(nextCells);
+    if (nextCells[indexSq] === '') {
+      nextCells[indexSq] = player;
+      setCells(nextCells);
+      onPlay();
+
+      var winner:string|null = calculateWinner(nextCells);
+      if (winner) onWinner(winner);
+    }
   }
 
   function mapSquares(x:number) {
@@ -48,21 +54,48 @@ function Board({player, onPlay}: BoardProps) {
 
 export default function Home() {
   const [player, setPlayer] = useState('X');
+  const [winner, setWinner] = useState<string|null>(null);
 
   function handlePlay(){
     setPlayer(player === 'X' ? '0': 'X');
+  }
+
+  function handleWinner(w:string){
+    setWinner(w);
   }
 
   return (
   <>
     <h1 className="mb-8 text-3xl font-bold">Tic Tac Toe</h1>
     <h3 className="mb-8 text-1xl">Player {player}'s turn</h3>
+    <h3 className="mb-8 text-1xl">Winner {winner}</h3>
     <div className="flex place-content-center">
       <Board 
         player={player}
         onPlay={handlePlay}
+        onWinner={handleWinner}
       />
     </div>
   </>
   )
+}
+
+function calculateWinner(squares:string[]):string|null {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
 }
