@@ -1,3 +1,5 @@
+
+
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -16,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-teal-200 pt-8 text-center">{children}</body>
+      <body className="bg-slate-200 pt-8 text-center">{children}</body>
     </html>
   )
 }
