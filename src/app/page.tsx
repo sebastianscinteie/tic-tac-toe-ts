@@ -45,13 +45,12 @@ function Board() {
       setCells(nextCells);
       setPlayer(player === 'X' ? 'O': 'X');
 
-      const [w, isWinner] = calculateWinner(nextCells)
+      const [w, isWinner] = calculateWinner(nextCells) as [typeof player, boolean]
       if (isWinner) {
         setGameWon(true)
-        const incrementedWinner = (w === 'X' ? {X: score.X + 1}: {O: score.O + 1});
         setScore({
           ...score,
-          ...incrementedWinner
+          [w]:score[w]+1
         });
         setGameNo(gameNo + 1);
       }
