@@ -85,7 +85,7 @@ function Board() {
   return (
     <>
       <h3 className="mb-8 text-2xl font-serif">Game: {decimalFont(gameNo)}  Score X: {decimalFont(score.X)} O: {decimalFont(score.O)}</h3>
-      <h3 className="mb-8 text-1xl">Player {player}'s turn</h3>
+      <h3 className="mb-8 text-1xl">Player {player}{`&apos`}s turn</h3>
       {/* <h3 className="mb-8 text-1xl text-red-500">{(winner == null)?<>&nbsp;</>:`Winner is ${winner}`}</h3> commented this so I won't lose the nbsp stuff*/}
       {/* &nbsp; or non-breaking space is used to preserver the layout of the page when this h3 has text null, otherwise the entire layout will be shifted*/} 
     
