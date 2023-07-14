@@ -26,6 +26,23 @@ function Board() {
   const [score, setScore] = useState({X: 0, O: 0});
   const [gameNo, setGameNo] = useState(0)
 
+  const [online, setOnline] = useState(false);
+  const [onlinePlayer, setOnlinePlayer] = useState(null);
+  const [onlineId, setOnlineId] = useState<number|null>(null);
+
+  async function handleOnline() {
+    resetScore();
+    setOnline(true);
+
+    const res = await fetch('/api/game')
+    const data = await res.json();
+    const id = data.id;
+
+    console.log(id);
+
+    setOnlineId(id);
+  }
+
   function resetBoard(){
     setCells(new Array(9).fill(null));
     setPlayer('X');
@@ -85,7 +102,7 @@ function Board() {
   return (
     <>
       <h3 className="mb-8 text-2xl font-serif">Game: {decimalFont(gameNo)}  Score X: {decimalFont(score.X)} O: {decimalFont(score.O)}</h3>
-      <h3 className="mb-8 text-1xl">Player {player}{`&apos`}s turn</h3>
+      <h3 className="mb-8 text-1xl">Player {player}&apos;s turn</h3>
       {/* <h3 className="mb-8 text-1xl text-red-500">{(winner == null)?<>&nbsp;</>:`Winner is ${winner}`}</h3> commented this so I won't lose the nbsp stuff*/}
       {/* &nbsp; or non-breaking space is used to preserver the layout of the page when this h3 has text null, otherwise the entire layout will be shifted*/} 
     
@@ -96,6 +113,8 @@ function Board() {
       </div>
       <button className="border border-black rounded bg-slate-100 m-10 p-2" onClick={resetBoard}>{gameWon ? 'Next Game' : 'Reset Board'}</button>
       {(score.X + score.O) ? <button className="border border-black rounded bg-slate-100 m-10 p-2" onClick={resetScore}>Reset Score</button> : null}
+      <button className="border border-black rounded bg-slate-100 m-10 p-2" onClick={handleOnline}>Start online game</button>
+      <p>{onlineId}</p>
     </>
   );
 }
