@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import io from "socket.io-client";
+import io, { Socket } from "socket.io-client";
 
-let socket: any; //used in home
+let socket: Socket; //used in home
 
 type SquareProps = {
   value: string | null;
@@ -142,6 +142,12 @@ export default function Home() {
   const [input, setInput] = useState("");
 
   useEffect(() => {
+    fetch("/api/test").then((res:any) => {
+      res.json().then( (data:any) => {
+        console.log('API response data', data.a);
+      })
+    })
+
     fetch("/socket").finally(() => {
       socket = io();
       socket.on("test", () => {

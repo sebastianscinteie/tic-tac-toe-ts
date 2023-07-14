@@ -6,7 +6,7 @@ const next = require('next')
  
 const dev = process.env.NODE_ENV !== 'production'
 const hostname = 'localhost'
-const port = 3000
+const port = 8080
 // when using middleware `hostname` and `port` must be provided below
 const app = next({ dev, hostname, port })
 const handle = app.getRequestHandler()
@@ -31,6 +31,8 @@ app.prepare().then(() => {
         res.socket.server.io = io;
 
         io.on("connection", (socket:any) => {
+          console.log("connection")
+          socket.emit("test","bla")
           socket.on("hello", () => {
             console.log("what is happeing");
           });
@@ -40,7 +42,7 @@ app.prepare().then(() => {
           });
         });
 
-        req.end();
+        res.end();
       } else {
         await handle(req, res, parsedUrl)
       }
