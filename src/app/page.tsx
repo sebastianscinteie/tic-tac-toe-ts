@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import io, { Socket } from "socket.io-client";
 
@@ -33,7 +34,10 @@ function Board() {
 
   const [online, setOnline] = useState(false);
   const [onlinePlayer, setOnlinePlayer] = useState(null);
-  const [onlineId, setOnlineId] = useState<number|null>(null);
+
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const pathName = usePathname()
 
   async function handleOnline() {
     resetScore();
@@ -45,7 +49,7 @@ function Board() {
 
     console.log(id);
 
-    setOnlineId(id);
+    router.push(`/?id=${id}`)
   }
 
   function resetBoard(){
@@ -64,6 +68,7 @@ function Board() {
     let nextCells = cells.slice();
     if (nextCells[indexSq] === null) {
       nextCells[indexSq] = player;
+      // online ? sendBoard(nextCells) : setCells(nextCells);
       setCells(nextCells);
       setPlayer(player === "X" ? "O" : "X");
 
@@ -80,6 +85,10 @@ function Board() {
         setGameNo(gameNo + 1);
       }
     }
+  }
+
+  function sendBoard(nextCells: typeof cells) {
+    socket.emit("board", nextCells)
   }
 
   function calculateWinner(
@@ -134,9 +143,9 @@ function Board() {
       </div>
 
       <button className="border border-black rounded bg-slate-100 m-10 p-2" onClick={resetBoard}>{gameWon ? 'Next Game' : 'Reset Board'}</button>
-      {(score.X + score.O) ? <button className="border border-black rounded bg-slate-100 m-10 p-2" onClick={resetScore}>Reset Score</button> : null}
-      <button className="border border-black rounded bg-slate-100 m-10 p-2" onClick={handleOnline}>Start online game</button>
-      <p>{onlineId}</p>
+      {(score.X + score.O === 0)||<button className="border border-black rounded bg-slate-100 m-10 p-2" onClick={resetScore}>Reset Score</button>}
+      {online||<button className="border border-black rounded bg-slate-100 m-10 p-2" onClick={handleOnline}>Start online game</button>}
+      <p>{`http://localhost:8080${pathName}?${searchParams}`}</p>
     </>
   );
 }
