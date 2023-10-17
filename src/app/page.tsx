@@ -145,30 +145,15 @@ export default function Home() {
   const [input, setInput] = useState("");
 
   useEffect(() => {
-    fetch("/api/test").then((res:any) => {
-      res.json().then( (data:any) => {
-        console.log('API response data', data.a);
-      })
-    })
-
     fetch("/socket").finally(() => {
       socket = io();
-      socket.on("test", () => {
-        console.log("test");
-        socket.emit("hello", "world");
-      });
+      socket.on("connect", () => console.log("Connection established with server."));
     });
   }, []);
-
-  function socketChange(e: any) {
-    setInput(e.target.value);
-    socket.emit("input-change", e.target.value);
-  }
 
   return (
     <>
       <h1 className="mb-8 text-3xl font-bold">Tic Tac Toe</h1>
-      <input placeholder="Type" value={input} onChange={socketChange}></input>
       <Board />
     </>
   );

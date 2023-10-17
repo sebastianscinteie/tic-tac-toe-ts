@@ -29,15 +29,7 @@ app.prepare().then(() => {
         res.socket.server.io = io;
 
         io.on("connection", (socket:any) => {
-          console.log("connection")
-          socket.emit("test","bla")
-          socket.on("hello", () => {
-            console.log("what is happeing");
-          });
-
-          socket.on("input-change", (msg:any) => {
-            console.log(msg);
-          });
+          console.log("Connection established with client.");
         });
 
         res.end();
